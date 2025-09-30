@@ -196,6 +196,7 @@ namespace engine
 	private:
 		Vector2 position;
 		Vector2 velocity;
+		double rotation;	// Expressed in radians
 
 		reference<actor> parent;
 
@@ -203,6 +204,9 @@ namespace engine
 
 		inline virtual void DetachChild(const pointer<actor>& child) final { children.remove(child); }
 	public:
+		inline actor(const Vector2& init_pos = ZERO2D, const Vector2& init_vel = ZERO2D, double rot = 0.0) :
+			position(init_pos), velocity(init_vel), rotation(rot) {}
+
 		virtual ~actor() = default;
 
 		inline virtual void tick(float DeltaTime) override { object::tick(DeltaTime); position += velocity * DeltaTime; }
@@ -267,8 +271,17 @@ namespace engine
 	class SceneComponent : public ActorComponent
 	{
 	private:
+		Vector2 RelativePosition;
 		Vector2 RelativeVelocity;
+		double  RelativeRotation;	// expressed in radians
 
+	public:
+		inline SceneComponent(	const Vector2& init_pos = ZERO2D,
+								const Vector2& init_vel = ZERO2D,
+								double rot = 0.0) 
+								: RelativePosition(init_pos), 
+								  RelativeVelocity(init_vel), 
+								  RelativeRotation(rot) {}
 	};
 }
 
