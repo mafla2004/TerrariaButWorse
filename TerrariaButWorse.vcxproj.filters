@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Engine">
+      <UniqueIdentifier>{0a8961c4-4882-41b2-b47c-f1b061002dc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Physics">
+      <UniqueIdentifier>{04c22873-3b84-46f9-8f56-fdddb70eb4a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\AdvMath">
+      <UniqueIdentifier>{9d37eee4-d6dd-44be-9b40-4b7164bea8b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Engine">
+      <UniqueIdentifier>{86c59b5d-c6bf-47dc-896e-4c290c8d45fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Engine\AdvMath">
+      <UniqueIdentifier>{52b8c803-0eb7-4da4-8ec2-d084fed9ab9f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="component_framework.cpp">
+      <Filter>Resource Files\Engine\AdvMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector.cpp">
+      <Filter>Resource Files\Engine\AdvMath</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>Resource Files\Engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CoreEngine.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="physics.h">
+      <Filter>Header Files\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearAlgebra.h">
+      <Filter>Header Files\Engine\AdvMath</Filter>
+    </ClInclude>
+    <ClInclude Include="MathFuncs.h">
+      <Filter>Header Files\Engine\AdvMath</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
