@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreEngine.h" />
+    <ClInclude Include="EngineMemory.h" />
     <ClInclude Include="LinearAlgebra.h" />
     <ClInclude Include="MathFuncs.h" />
     <ClInclude Include="physics.h" />

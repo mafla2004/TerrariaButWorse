@@ -56,5 +56,8 @@
     <ClInclude Include="MathFuncs.h">
       <Filter>Header Files\Engine\AdvMath</Filter>
     </ClInclude>
+    <ClInclude Include="EngineMemory.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

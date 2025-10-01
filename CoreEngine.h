@@ -2,6 +2,7 @@
 #define __CORE_ENGINE__
 
 #include "LinearAlgebra.h"
+#include "EngineMemory.h"
 #include "MathFuncs.h"
 #include "physics.h"
 #include <unordered_map>
@@ -16,47 +17,6 @@
 
 namespace Engine
 {
-/*	I planned to make a custom garbage collector, but since this is a learning project I decided
-	to use C++'s smart pointers. I still plan to implement a custom garbage collector
-	at some point though, so I use the preprocessor to "save" what was done as of now... */
-#ifndef USE_CUSTOM_GARBAGE_COLLECTION
-	template <class C>
-	using Pointer = std::shared_ptr<C>;
-
-	template<class C>
-	using Reference = std::weak_ptr<C>;
-
-	template<class C>
-	using Ownership = std::unique_ptr<C>;
-
-	template<class C>
-	inline Pointer<C> MakePointer() { return std::make_shared<C>(); };
-
-	template<class C>
-	Pointer<C> MakePointer(size_t n) { return std::make_shared<C>(n); };
-
-	template<class C, class... Args>
-	Pointer<C> MakePointer(Args&&... args) { return std::make_shared(args); };
-#else
-	template <class C>
-	class Pointer;
-
-	template <class C>
-	class Reference;
-
-	template <class C>
-	class Ownership;
-
-	template<class C>
-	Pointer<C> MakePointer();
-
-	template<class C>
-	Pointer<C> MakePointer(size_t n);
-
-	template<class C, class... Args>
-	Pointer<C> MakePointer(Args&&... args);
-#endif
-
 	// --------------------------------------------------
 	// ENGINE BASE CLASSES
 	// --------------------------------------------------
@@ -152,29 +112,7 @@ namespace Engine
 		virtual ~ObjectComponent() override = default;
 	};
 
-#ifdef USE_CUSTOM_GARBAGE_COLLECTION
-	// --------------------------------------------------
-	// CUSTOM GARBAGE COLLECTION
-	// --------------------------------------------------
-
-	std::unordered_map<Object*, uint32_t> pointers;
-
-	template<class C>
-	class Pointer
-	{
-	private:
-		C* raw;
-
-		Pointer();
-	public:
-		virtual ~Pointer() = default;
-
-		C* operator->() const noexcept;
-	};
-
-	template<class C>
-	inline C* Pointer<C>::operator->() const noexcept { return raw; }
-#endif
+	inline void ObjectComponent::Attach(const Pointer<Object>& obj) { Parent = obj; }
 };
 
 #endif
