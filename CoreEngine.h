@@ -49,6 +49,10 @@ namespace Engine
 		template<class C>
 		bool AddComponentOfClass();
 
+		// Tries to add a component of a class, using the parameters to call a specific constructor
+		template<class C, class... Args>
+		bool AddComponentOfClass(Args&&... args);
+
 		// Removes a component of a certain class
 		template<class C>
 		void RemoveComponentOfClass();

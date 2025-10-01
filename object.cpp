@@ -40,6 +40,23 @@ void Engine::Object::RemoveComponentOfClass()
 	}
 }
 
+template<class C, class... Args>
+bool Engine::Object::AddComponentOfClass(Args&&... args)
+{
+	type_assert(Engine::Component, C, "Class must be derived from Component");
+
+	if (HasComponentOfClass<C>())
+	{
+		return false;
+	}
+
+	Ownership<Component> comp = MakeOwnership<C>(args);
+	Components.push_back(comp);
+	comp->Attach(GetSelf());
+
+	return true;
+}
+
 template<class C>
 Engine::Reference<C> Engine::Object::GetComponentOfClass()
 {
