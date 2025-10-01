@@ -283,6 +283,20 @@ namespace engine
 								  RelativeVelocity(init_vel), 
 								  RelativeRotation(rot) {}
 	};
+
+	// --------------------------------------------------
+	// GAME WORLD
+	// --------------------------------------------------
+
+	/*
+	*	A world class that is organized in a grid.
+	*	This is useful for quick collision detections.
+	*	No implementative details yet, a lot has to be established.
+	*/
+	class world
+	{
+
+	};
 }
 
 #endif
