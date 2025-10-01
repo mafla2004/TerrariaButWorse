@@ -17,7 +17,11 @@ bool Engine::Object::AddComponentOfClass()
 	{
 		return false;
 	}
-	
+
+	Ownership<Component> comp = MakeOwnership<C>();
+	Components.push_back(comp);
+	comp->Attach(GetSelf());
+
 	return true;
 }
 
@@ -32,6 +36,20 @@ void Engine::Object::RemoveComponentOfClass()
 		{
 			Components.erase(i);	// Why not call it remove???
 			return;
+		}
+	}
+}
+
+template<class C>
+Engine::Reference<C> Engine::Object::GetComponentOfClass()
+{
+	type_assert(Engine::Component, C, "Class must be derived from Component");
+
+	for (size_t i = 0; i < Components.size(); i++)
+	{
+		if (dynamic_cast<C*>(Components[i].get()))
+		{
+
 		}
 	}
 }

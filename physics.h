@@ -1,53 +1,50 @@
 #ifndef __PHYS__
 #define __PHYS__
 
+#include "EngineMemory.h"
 #include <string>
 
-namespace engine
+namespace Engine
 {
 	constexpr double gravity = 9.81;
 
-	using namespace std;
-
 	// Forward Declarations
-	class actor;
-	class object;
-	template<class T>
-	class pointer;
+	class Actor;
+	class Object;
+	class Collider;
 
 	/*	NOTE: String seems to be a rather memory inefficient type, consider changing it
 		to other data types like a custom string or string_view */
 
 	// Default collision channels
-	const string NO_COLLISION		= "None";
-	const string STATIC_COLLISION	= "Static";
-	const string DYNAMIC_COLLISION	= "Dynamic";
-	const string ENTITY_COLLISION	= "Entity";
-	const string CHARACTER_COLLISION= "Character";
-	/*
+	const std::string NO_COLLISION			= "None";
+	const std::string STATIC_COLLISION		= "Static";
+	const std::string DYNAMIC_COLLISION		= "Dynamic";
+	const std::string ENTITY_COLLISION		= "Entity";
+	const std::string CHARACTER_COLLISION	= "Character";
+	
 	typedef struct
 	{
-		pointer<actor>		OtherActor;
-		pointer<collider>	OtherCollider;
+		Pointer<Actor>		OtherActor;
+		Pointer<Collider>	OtherCollider;
 	} CollisionResults;
-	*/
-
+	
 	/*
 	*	Base Class for colliders
 	*/
-	class collider
+	class Collider
 	{
 	private:
-		string CollisionChannel;
+		std::string CollisionChannel;
 
 	public:
-		inline collider(const string& collision = NO_COLLISION) : CollisionChannel(collision) {}
-		virtual ~collider() = default;
+		inline Collider(const std::string& collision = NO_COLLISION) : CollisionChannel(collision) {}
+		virtual ~Collider() = default;
 
-		virtual string GetCollisionChannel() const final;
+		virtual std::string GetCollisionChannel() const final;
 	};
 
-	inline string collider::GetCollisionChannel() const { return CollisionChannel; }
+	inline std::string Collider::GetCollisionChannel() const { return CollisionChannel; }
 }
 
 #endif
