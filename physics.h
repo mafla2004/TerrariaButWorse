@@ -24,12 +24,13 @@ namespace engine
 	const string DYNAMIC_COLLISION	= "Dynamic";
 	const string ENTITY_COLLISION	= "Entity";
 	const string CHARACTER_COLLISION= "Character";
-
+	/*
 	typedef struct
 	{
 		pointer<actor>		OtherActor;
 		pointer<collider>	OtherCollider;
 	} CollisionResults;
+	*/
 
 	/*
 	*	Base Class for colliders
