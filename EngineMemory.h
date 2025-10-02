@@ -19,16 +19,20 @@ namespace Engine
 	using Ownership = std::unique_ptr<C>;
 
 	template<class C>
-	inline Pointer<C> MakePointer() { return std::make_shared<C>(); };
+	inline Pointer<C> MakePointer() { return std::make_shared<C>(); }
 
 	template<class C>
-	inline Pointer<C> MakePointer(size_t n) { return std::make_shared<C>(n); };
+	inline Pointer<C> MakePointer(size_t n) { return std::make_shared<C>(n); }
 
 	template<class C, class... Args>
-	inline Pointer<C> MakePointer(Args&&... args) { return std::make_shared(args); };
+	inline Pointer<C> MakePointer(Args&&... args) { return std::make_shared(args); }
+
+	template<class Derived, class Base>
+	inline Pointer<Derived> DynamicPointerCast(const Pointer<Base>& ptr) 
+	{ return std::dynamic_pointer_cast<Derived, Base>(ptr); }
 
 	template<class C>
-	inline Reference<C> MakeReference(const Pointer<C>& ptr) { return ptr; }
+	inline Reference<C> MakeReference(const Pointer<C>& ptr = nullptr) { return ptr; }
 
 	template<class C>
 	inline Reference<C> MakeReference(const Ownership<C>& own) { return own; }

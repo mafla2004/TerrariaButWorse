@@ -7,6 +7,7 @@
 #include "physics.h"
 #include <unordered_map>
 #include <cinttypes>
+#include <iostream>
 #include <numbers>	//#include <wrench> ;)
 #include <memory>
 #include <vector>
@@ -14,6 +15,7 @@
 #include <map>
 
 #define type_assert(base, derived, msg) static_assert(std::is_base_of<base, derived>::value, msg)
+#define debug_print(stream) std::cout << stream << std::endl
 
 namespace Engine
 {
@@ -31,7 +33,7 @@ namespace Engine
 	protected:
 		bool bShouldTick = true;
 
-		std::vector<Ownership<Component>> Components;
+		std::vector<Pointer<Component>> Components;
 	public:
 		inline Object() = default;
 		virtual ~Object() = default;
@@ -80,7 +82,15 @@ namespace Engine
 		std::vector<Pointer<Actor>> Children;
 	public:
 		virtual ~Actor() override = default;
+
+		virtual void tick(float DeltaTime) override;
 	};
+
+	inline void Actor::tick(float DeltaTime) 
+	{ 
+		Position += Velocity * DeltaTime; 
+		Object::tick(DeltaTime); 
+	}
 
 	// --------------------------------------------------
 	// COMPONENT FRAMEWORK
@@ -99,9 +109,9 @@ namespace Engine
 	{ 
 	friend class Object;
 	private:
-		// This function is meant to be only called by Object in AddComponent and nowhere else
-		virtual void Attach(const Pointer<Object>&) = 0;
-
+		// Theses functions are meant to be only called by Object in AddComponent and nowhere else
+		virtual bool Attach(const Pointer<Object>&) = 0;
+		virtual void Detach() = 0;
 	public:
 		virtual ~Component() = default;
 	};
@@ -111,12 +121,147 @@ namespace Engine
 	private:
 		Reference<Object> Parent;
 
-		virtual void Attach(const Pointer<Object>&) override;
+		virtual bool Attach(const Pointer<Object>&) override;
+		virtual void Detach() override;
 	public:
 		virtual ~ObjectComponent() override = default;
 	};
 
-	inline void ObjectComponent::Attach(const Pointer<Object>& obj) { Parent = obj; }
+	inline void ObjectComponent::Detach() { Parent.reset(); }
+
+	inline bool ObjectComponent::Attach(const Pointer<Object>& obj) 
+	{
+		if (Parent.lock())
+		{
+			return false;
+		}
+		Parent = obj; 
+		return true;
+	}
+
+	class ActorComponent : public Component
+	{
+	private:
+		Reference<Actor> Parent;
+
+		virtual bool Attach(const Pointer<Object>&) override;
+		virtual void Detach() override;
+	public:
+		virtual ~ActorComponent() override = default;
+	};
+
+	inline void ActorComponent::Detach() { Parent.reset(); }
+
+	inline bool ActorComponent::Attach(const Pointer<Object>& ptr)
+	{
+		if (!dynamic_cast<Actor*>(ptr.get()))
+		{
+			return false;
+		}
+
+		Parent = DynamicPointerCast<Actor, Object>(ptr);
+		return Parent.lock() != nullptr;
+	}
 };
+
+
+	// REMEMBER: The compiler really hates it when templated methods are not defined in the header
+
+	template<class C>
+	inline bool Engine::Object::HasComponentOfClass()
+	{
+		type_assert(Engine::Component, C, "Class must be derived from Component");
+
+		// I wondered why adding components didn't work and dound I forgot to implement the method
+		// and instead left it as a placeholder with this as only instruction
+		//return true;
+		// STUPID
+
+		for (Pointer<Component> ptr : Components)
+		{
+			if (dynamic_cast<C*>(ptr.get()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	template<class C>
+	inline bool Engine::Object::AddComponentOfClass()
+	{
+		type_assert(Engine::Component, C, "Class must be derived from Component");
+
+		if (HasComponentOfClass<C>())
+		{
+			return false;
+		}
+
+		Pointer<Component> comp = MakePointer<C>();
+		if (!comp->Attach(GetSelf()))
+		{
+			return false;
+		}
+		Components.push_back(comp);
+
+		return true;
+	}
+
+	template<class C>
+	inline void Engine::Object::RemoveComponentOfClass()
+	{
+		type_assert(Engine::Component, C, "Class must be derived from Component");
+
+		for (size_t i = 0; i < Components.size(); i++)
+		{
+			if (dynamic_cast<C*>(Components[i].get()))
+			{
+				Components[i]->Detach();
+				Components.erase(i);	// Why not call it remove???
+				return;
+			}
+		}
+	}
+
+	template<class C, class... Args>
+	inline bool Engine::Object::AddComponentOfClass(Args&&... args)
+	{
+		type_assert(Engine::Component, C, "Class must be derived from Component");
+
+		if (HasComponentOfClass<C>())
+		{
+			debug_print("Duplicate component class");
+			return false;
+		}
+
+		Pointer<Component> comp = MakePointer<C>(args);
+		if (!comp->Attach(GetSelf))
+		{
+			debug_print("Attachment failed");
+			return false;
+		}
+		Components.push_back(comp);
+
+		return true;
+	}
+
+	template<class C>
+	inline Engine::Reference<C> Engine::Object::GetComponentOfClass()
+	{
+		type_assert(Engine::Component, C, "Class must be derived from Component");
+
+		Reference<C> ret;
+		for (size_t i = 0; i < Components.size(); i++)
+		{
+			if (dynamic_cast<C*>(Components[i].get()))
+			{
+				Reference<C> ret = DynamicPointerCast<Engine::ObjectComponent, Engine::Component>(Components[i]);
+				return ret;
+			}
+		}
+
+		ret = MakeReference<C>();	// Nasty disgusting workaround to return null
+		return ret;
+	}
 
 #endif
